@@ -57,3 +57,6 @@ class Node:
             self._wins-=1 
         
         self._visits+=1
+
+    def get_score(self):
+        return self._wins/self._visits

@@ -1,16 +1,18 @@
 from helper import GameState, Turns, switch_turns, current_milli_time
 from random import choice
 from uttt import UltimateTicTacToe
+from copy import deepcopy as clone
 
 class MCTS:
     def __init__(self, turn, board, timeout=500, before=1):
         self._turn = turn
         self._cloned_board = UltimateTicTacToe(board)
+        self.mct = None
 
     def run(self):
         start_time = current_milli_time()
         while current_milli_time() - start_time < self.timeout - self.before:
-            pass
+            pass # finish this and it should hopefully be starting to crash
 
     def selection(self, node):
         while(len(self._cloned_board.get_free_moves())==len(node.get_children()) and len(node.get_children())!=0):
@@ -20,7 +22,7 @@ class MCTS:
     
     def expansion(self, node):
         next_move = None
-        won = Board.check_win(self._cloned_board, node.get_turn())
+        won = self._cloned_board.is_game_done()
         if (won):
             node.set_game_over()
         else:
@@ -79,6 +81,16 @@ class MCTS:
             if node == None:
                 break
 
-    # def select_best_ucb_child()
+    def play_cloned_board(self, move, turn):
+        self._cloned_board.move(turn,*move)
+
+    def select_best_ucb_child(self, nodes):
+        best_node = nodes[0]
+        for node in nodes:
+            best_score = node if node.get_ucb_value() > best_node.get_ucb_value() else best_node
+        return best_node
     
-    
+    def choose_best_next_move(self):
+        move = sorted(self.mct.get_root().get_children(), key=lambda n: n.get_score()][-1]
+        self.mct.set_root(move)
+        return move.get_move()
