@@ -2,7 +2,7 @@ from node import Node
 
 class Tree:
     def __init__(self, turn):
-        self._root = Node(turn)
+        self._root = Node(parent=None,turn=turn, move=None)
     
     def set_root(self, node):
         self._root = node

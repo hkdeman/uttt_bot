@@ -1,4 +1,4 @@
-from helper import switch_turns, Ranks
+from helper import switch_turns, GameState
 from math import sqrt, log
 
 UCB_CONSTANT = 2
@@ -51,12 +51,15 @@ class Node:
         self._visits = 1
 
     def update_stats(self, game_state):
-        if game_state == Ranks.WIN:
+        if game_state == GameState.WIN:
             self._wins+=1
-        elif game_state == Ranks.LOSE:
+        elif game_state == GameState.LOSE:
             self._wins-=1 
         
         self._visits+=1
 
     def get_score(self):
         return self._wins/self._visits
+
+    def __str__(self):
+        return str(self._move)

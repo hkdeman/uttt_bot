@@ -5,11 +5,14 @@ import numpy as np
 class UltimateTicTacToe:
     def __init__(self, board):
         self.board = [TicTacToe(grid) for grid in board]
-        self.winner = None
-        self.last_turn = None
+        self.winner = None # None as nobody won
+        self.last_turn = None # None because nobody played before
+        self.previous_move = None # None on the start of the game
 
     def get_last_turn(self): return self.last_turn
     
+    def get_previous_move(self): return self.previous_move
+
     def get_board(self): return self.board
 
     def get_winner(self): return self.winner
@@ -18,12 +21,21 @@ class UltimateTicTacToe:
     
     def get_grid_to_move(self): return self.last_turn
     
-    def get_sub_board(self, board_pos): return self.grid[board_pos]
+    def get_sub_board(self, board_pos): return self.board[board_pos]
     
+    def is_board_full(self):
+        for sub_board in self.board:
+            if not sub_board.is_game_done():
+                return False
+        return True
+
     def get_free_moves(self): 
         free_moves = []
-        for i, sub_board in enumerate(self.board):
-            free_moves.extend([(i,move) for move in sub_board.get_free_moves()])
+        if self.last_turn == None:
+            for i, sub_board in enumerate(self.board):
+                free_moves.extend([(i,move) for move in sub_board.get_free_moves()])
+        else:
+            free_moves.extend([(self.last_turn, move) for move in self.board[self.last_turn].get_free_moves()])
         return free_moves
 
     def get_positions(self, player):
@@ -36,12 +48,14 @@ class UltimateTicTacToe:
     def move(self,turn, grid, pos):
         if self.last_turn == None:
             if self.board[grid].move(turn, pos):
-                self.last_turn = grid
+                self.last_turn = grid if not self.board[grid].is_game_done() else None                
+                self.previous_move = (grid,pos)
                 return True
             return False
         elif grid == self.last_turn:
             if self.board[grid].move(turn, pos):
-                self.last_turn = grid
+                self.last_turn = grid if not self.board[grid].is_game_done() else None
+                self.previous_move = (grid,pos)
                 return True
             return False
         return False
@@ -57,9 +71,14 @@ class UltimateTicTacToe:
         x_pos = self.get_positions(Turns.X.value)
         o_pos = self.get_positions(Turns.O.value)
 
-        x_win, o_win = self.did_win(x_win), self.did_win(o_pos)
+        x_win, o_win = self.did_win(x_pos), self.did_win(o_pos)
 
-        if x_win or o_win:
-            self.winner = Turns.X.value if x_win else Turns.O.value
+        if x_win:
+            self.winner = Turns.X.value
+            return True
+        elif o_win:
+            self.winner = Turns.O.value
+            return True
+        elif self.is_board_full():
             return True
         return False
