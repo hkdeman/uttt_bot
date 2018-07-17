@@ -45,6 +45,7 @@ class MainBoard(object):
 
         self._is_finished = False  # type: bool
         self._winner = Player.NONE  # type: Player
+        self.is_first_move = True
 
     @property
     def sub_board_next_player_must_play(self) -> MainBoardCoords:
@@ -81,6 +82,7 @@ class MainBoard(object):
         Returns:
             A new MainBoard instance with the move applied
         """
+        self.is_first_move = False
         return self._add_move(main_board_coords, sub_board_coords, Player.ME)
 
     def add_opponent_move(self, main_board_coords: MainBoardCoords, sub_board_coords: SubBoardCoords) -> 'MainBoard':
@@ -102,7 +104,6 @@ class MainBoard(object):
 
     def get_playable_coords(self) -> [MainBoardCoords]:
         """Returns all board co-ordinates that are valid for the next move.
-
         If the opponents previous move co-ordinates (according to the rules)
         restrict you to a single sub-board, then this will return only that board.
         If not, it will return all boards that are valid for moves. 
@@ -243,3 +244,6 @@ class MainBoard(object):
 
     def __getitem__(self, key):
         return self._board[key]
+
+    def is_first_move():
+        return self.is_first_move

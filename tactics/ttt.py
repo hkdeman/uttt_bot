@@ -1,5 +1,5 @@
 import numpy as np
-from helper import Turns, WIN_POSES
+from tactics.helper import Turns, WIN_POSES
 
 class TicTacToe:
     def __init__(self, grid):
@@ -15,9 +15,17 @@ class TicTacToe:
     def get_free_moves(self): return np.where(self.grid==Turns.Empty.value)[0] if not self.did_someone_win() else []
 
     def move(self, turn, pos):
-        if self.grid[pos] == 0 and not self.is_game_done():
+        if self.grid[pos] == Turns.Empty.value and not self.is_game_done():
             self.grid[pos] = turn
             return True
+        else:
+            return False
+        
+    def did_win(self,player):
+        player=bytearray(player)
+        for pos in WIN_POSES:
+            if pos in player:
+                return True
         else:
             return False
         

@@ -1,18 +1,19 @@
-from helper import GameState, Turns, switch_turns, current_milli_time
+from tactics.helper import GameState, Turns, switch_turns, current_milli_time
 from random import choice
-from uttt import UltimateTicTacToe
+from tactics.uttt import UltimateTicTacToe
 from copy import deepcopy as clone
-from tree import Tree
+from tactics.tree import Tree
 import numpy as np
 
 class MCTS:
-    def __init__(self, turn, board, timeout=500, before=1):
+    def __init__(self, board, last_turn,turn=Turns.X.value, timeout=100, before=1):
         self.turn = turn
         self.board = board
         self._cloned_board = None
         self.mct = None
         self.timeout = timeout
         self.before = before
+        self.last_turn = last_turn
     
     def run(self):
         if self.mct == None:
@@ -20,7 +21,7 @@ class MCTS:
             self.mct = Tree(switch_turns(self.turn))
         else:
             # if the tree exists look for the node if it contains that
-            children =self.mct.get_root().get_children
+            children =self.mct.get_root().get_children()
             if len(children) !=0:
                 contained = False
                 node = children[0]
@@ -36,10 +37,10 @@ class MCTS:
             else:
                 # otherwise initialize new tree
                 self.mct = Tree(switch_turns(self.turn))
-
+        
         start_time = current_milli_time()
         while current_milli_time() - start_time < self.timeout - self.before:
-            self._cloned_board = clone(UltimateTicTacToe(self.board))
+            self._cloned_board = clone(UltimateTicTacToe(board=self.board, last_turn=self.last_turn))
             self.roll_out(self.expansion(self.selection(self.mct.get_root())))
         return self.choose_best_next_move()
 
@@ -65,12 +66,12 @@ class MCTS:
                 if not contained:
                     next_move = move
                     break
-        node.add_child(next_move)
-        # self.play_cloned_board(node.get_move(), node.get_turn())
+            node = node.add_child(next_move)
+            self.play_cloned_board(move=next_move, turn=node.get_turn())
         # to give more precendence to the bigger board
         # to make sure long term goals are in mind
 
-        # won = False # appropriately update this later
+        # won = self._cloned_board.is# appropriately update this later
         # if (won == GameState.WIN):
         #     node.small_board_won()
         #     next_move = node.get_move()
@@ -118,13 +119,11 @@ class MCTS:
         self._cloned_board.move(turn,*move)
     
     def choose_best_next_move(self):
-        l = self.mct.get_root().get_children()
-        move = sorted(self.mct.get_root().get_children(), key=lambda n: n.get_score())
-        move= move[-1]
-        self.mct.set_root(move)
+        move = sorted(self.mct.get_root().get_children(), key=lambda n: n.get_score())[-1]
+        # self.mct.set_root(move)
         return move.get_move()
 
 
-grid = np.array([np.zeros(9) for _ in range(9)])
-mcts = MCTS(Turns.X.value,grid)
-print(mcts.run())
+# grid = np.array([np.zeros(9) for _ in range(9)])
+# mcts = MCTS(Turns.X.value,grid)
+# print(mcts.run())

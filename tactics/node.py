@@ -1,4 +1,4 @@
-from helper import switch_turns, GameState
+from tactics.helper import switch_turns, GameState
 from math import sqrt, log
 
 UCB_CONSTANT = 2
@@ -36,7 +36,7 @@ class Node:
         self.set_as_desirable(1)
     
     def add_child(self, move):
-        child = Node(move, self, switch_turns(self._turn))
+        child = Node(move=move, parent=self, turn=switch_turns(self._turn))
         self._children.append(child)
         return child
     

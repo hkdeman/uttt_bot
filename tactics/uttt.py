@@ -1,12 +1,12 @@
-from ttt import TicTacToe
-from helper import Turns, WIN_POSES
+from tactics.ttt import TicTacToe
+from tactics.helper import Turns, WIN_POSES
 import numpy as np 
 
 class UltimateTicTacToe:
-    def __init__(self, board):
+    def __init__(self, board, last_turn):
         self.board = [TicTacToe(grid) for grid in board]
         self.winner = None # None as nobody won
-        self.last_turn = None # None because nobody played before
+        self.last_turn = last_turn # None because nobody played before
         self.previous_move = None # None on the start of the game
 
     def get_last_turn(self): return self.last_turn
@@ -82,3 +82,17 @@ class UltimateTicTacToe:
         elif self.is_board_full():
             return True
         return False
+
+# board = np.array([
+#     np.array([1,1,1,0,0,0,0,0,0]),
+#     np.array([0,0,0,0,0,0,0,0,0]),
+#     np.array([0,0,0,0,0,0,0,0,0]),
+#     np.array([0,0,0,0,0,0,0,0,0]),
+#     np.array([0,0,0,0,0,0,0,0,0]),
+#     np.array([0,0,0,0,0,0,0,0,0]),
+#     np.array([0,0,0,0,0,0,0,0,0]),
+#     np.array([0,0,0,0,0,0,0,0,0]),
+#     np.array([0,0,0,0,0,0,0,0,0]),    
+# ])
+# uttt = UltimateTicTacToe(board,last_turn=0)
+# print(uttt.get_free_moves())

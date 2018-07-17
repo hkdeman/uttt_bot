@@ -1,4 +1,4 @@
-from node import Node
+from tactics.node import Node
 
 class Tree:
     def __init__(self, turn):

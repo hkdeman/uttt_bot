@@ -2,7 +2,7 @@
 
 import sys
 from players.toeminator import Toeminator
-
+from players.random import Random
 
 def main():
     line = sys.stdin.readline()
@@ -13,4 +13,5 @@ def main():
 
 if __name__ == "__main__":
     player = Toeminator()
+    # player = Random()
     main()

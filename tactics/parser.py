@@ -2,7 +2,6 @@ import numpy as np
 import time
 
 def parse(board):
-    now = current_milli_time() 
     grid = []
     for sub_boards in board:
         for sub_board in sub_boards:
