@@ -6,7 +6,7 @@ from tactics.tree import Tree
 import numpy as np
 
 class MCTS:
-    def __init__(self, board, last_turn,turn=Turns.X.value, timeout=100, before=1):
+    def __init__(self, board, last_turn,turn=Turns.X.value, timeout=50, before=1):
         self.turn = turn
         self.board = board
         self._cloned_board = None
@@ -71,12 +71,11 @@ class MCTS:
         # to give more precendence to the bigger board
         # to make sure long term goals are in mind
 
-        # won = self._cloned_board.is# appropriately update this later
-        # if (won == GameState.WIN):
+        # if (won and self._cloned_board.get_winner() == GameState.WIN):
         #     node.small_board_won()
         #     next_move = node.get_move()
-        # elif (self._cloned_board.get_at_pos() == Turns.Empty.value):
-        #     node.set_as_desirable(-0.2)
+        # elif (len(self._cloned_board.get_free_moves())<3):
+        #     node.set_as_desirable(-0.5)
         
         return node
 

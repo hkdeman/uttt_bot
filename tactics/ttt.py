@@ -22,20 +22,12 @@ class TicTacToe:
             return False
         
     def did_win(self,player):
-        player=bytearray(player)
+        player=set(player)
         for pos in WIN_POSES:
-            if pos in player:
-                return True
-        else:
-            return False
-        
-    def did_win(self,player):
-        player=bytearray(player)
-        for pos in WIN_POSES:
-            if pos in player:
+            if pos.issubset(player):
                 return True
         return False
-
+    
     def is_board_full(self):
         return len(self.get_free_moves())==0
 

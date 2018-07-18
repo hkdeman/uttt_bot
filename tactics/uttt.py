@@ -35,7 +35,11 @@ class UltimateTicTacToe:
             for i, sub_board in enumerate(self.board):
                 free_moves.extend([(i,move) for move in sub_board.get_free_moves()])
         else:
-            free_moves.extend([(self.last_turn, move) for move in self.board[self.last_turn].get_free_moves()])
+            if self.board[self.last_turn].is_game_done():
+                for i, sub_board in enumerate(self.board):
+                    free_moves.extend([(i,move) for move in sub_board.get_free_moves()])
+            else:
+                free_moves.extend([(self.last_turn, move) for move in self.board[self.last_turn].get_free_moves()])
         return free_moves
 
     def get_positions(self, player):
@@ -61,9 +65,9 @@ class UltimateTicTacToe:
         return False
     
     def did_win(self, player):
-        player=bytearray(player)
+        player=set(player)
         for pos in WIN_POSES:
-            if pos in player:
+            if pos.issubset(player):
                 return True
         return False
     

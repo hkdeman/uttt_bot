@@ -46,7 +46,7 @@ class Node:
 
     def set_as_desirable(self, value):
         if(not self._is_desirable):
-            self._wins += value*1000000
+            self._wins += value*100000000
             self._is_desirable = True
         self._visits = 1
 
@@ -54,7 +54,9 @@ class Node:
         if game_state == GameState.WIN:
             self._wins+=1
         elif game_state == GameState.LOSE:
-            self._wins-=1 
+            self._wins-=1
+        else:
+            self._wins+=0.5
         
         self._visits+=1
 
