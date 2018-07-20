@@ -8,7 +8,7 @@ from tactics.nn import NeuralNetwork
 from copy import deepcopy
 import numpy as np
  
-class NSquare(StdOutPlayer):
+class CNSquare(StdOutPlayer):
     def __init__(self):
         super().__init__()
         self.nn = NeuralNetwork()
@@ -29,7 +29,7 @@ class NSquare(StdOutPlayer):
                     sub_move_parsed = reverse_moves_mapper[(sub_move.row,sub_move.col)]
                     next_board[sub_board_parsed][sub_move_parsed] = 1
                     new_board = np.concatenate((current_board.flatten(),next_board.flatten()),axis=0)
-                    features.append(new_board)
+                    features.append(new_board.reshape((9,9,2)))
                     all_moves.append((move,sub_move))
         else:
             sub_moves = self.main_board.get_sub_board(last_turn).get_playable_coords()
@@ -39,10 +39,11 @@ class NSquare(StdOutPlayer):
                 next_board = deepcopy(current_board)
                 next_board[sub_board_parsed][sub_move_parsed] = 1
                 new_board = np.concatenate((current_board.flatten(),next_board.flatten()),axis=0)
-                features.append(new_board)
+                features.append(new_board.reshape((9,9,2)))
                 all_moves.append((last_turn,sub_move))
         features = np.array(features)
         scores = self.nn.predict(features)
+        print(scores)
         max_score_index = 0
         max_score = -1 # gonna lose completely
         least_o_score = -1

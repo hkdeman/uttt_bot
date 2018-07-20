@@ -4,7 +4,8 @@ from enum import Enum
 import random 
 import copy
 from keras.models import Sequential
-from keras.layers import Dense, Activation, LSTM, RNN
+from keras.layers import Dense, Activation, LSTM, RNN, Conv2D, MaxPooling2D, Flatten, Dropout
+import keras
 import time, datetime
 from IPython.display import clear_output
 from keras.models import model_from_json
@@ -16,6 +17,27 @@ class NeuralNetwork:
         self.setup()
         self.features = None
         self.labels = None
+
+    def csetup(self):
+        self.model = Sequential()
+        self.model.add(Conv2D(128, kernel_size=(3, 3),
+                         activation='relu',
+                         input_shape=(9,9,2)))
+        self.model.add(Conv2D(128, (3,3), activation='relu'))
+        self.model.add(Conv2D(256, (2, 2), activation='relu'))
+        self.model.add(Conv2D(384, (1, 1), activation='relu'))
+        self.model.add(MaxPooling2D(pool_size=(3, 3)))
+        self.model.add(Dropout(0.2))
+        self.model.add(Flatten())
+        self.model.add(Dense(64, activation='relu'))
+        self.model.add(Dropout(0.5))
+        self.model.add(Dense(64, activation='relu'))
+        self.model.add(Dropout(0.5))
+        self.model.add(Dense(2, activation='softmax'))
+    
+        self.model.compile(loss=keras.losses.categorical_crossentropy,
+              optimizer=keras.optimizers.Adadelta(),
+              metrics=['accuracy'])
     
     def setup(self):
         self.model.add(Dense(8,input_shape=(162,)))
@@ -29,7 +51,7 @@ class NeuralNetwork:
         self.model.add(Dense(2))
         self.model.add(Activation('softmax'))
 
-        self.model.compile(loss='binary_crossentropy',
+        self.model.compile(loss='categorical_crossentropy',
               optimizer='rmsprop',
               metrics=['accuracy'])
     

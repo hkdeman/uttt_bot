@@ -1,1 +1,1 @@
-uabc -p -f "python3 run_player.py"
+uabc -g 1 -p -f "python3 run_player.py"

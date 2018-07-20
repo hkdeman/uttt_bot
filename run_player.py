@@ -4,6 +4,7 @@ import sys
 from players.toeminator import Toeminator
 from players.random import Random
 from players.nsquare import NSquare
+from players.cnsquare import CNSquare
 
 def main():
     line = sys.stdin.readline()
@@ -15,5 +16,6 @@ def main():
 if __name__ == "__main__":
     # player = Toeminator()
     # player = Random()
-    player = NSquare()
+    player = CNSquare()
+    # player = NSquare()
     main()
