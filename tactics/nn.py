@@ -1,0 +1,71 @@
+
+import numpy as np
+from enum import Enum 
+import random 
+import copy
+from keras.models import Sequential
+from keras.layers import Dense, Activation, LSTM, RNN
+import time, datetime
+from IPython.display import clear_output
+from keras.models import model_from_json
+import os
+
+class NeuralNetwork:
+    def __init__(self):
+        self.model = Sequential()
+        self.setup()
+        self.features = None
+        self.labels = None
+    
+    def setup(self):
+        self.model.add(Dense(8,input_shape=(162,)))
+        self.model.add(Activation('relu'))
+        self.model.add(Dense(256))
+        self.model.add(Activation('relu'))
+        self.model.add(Dense(512))
+        self.model.add(Activation('relu'))
+        self.model.add(Dense(256))
+        self.model.add(Activation('relu'))
+        self.model.add(Dense(2))
+        self.model.add(Activation('softmax'))
+
+        self.model.compile(loss='binary_crossentropy',
+              optimizer='rmsprop',
+              metrics=['accuracy'])
+    
+    def train(self):
+        if self.features is None or self.labels is None:
+            print("Dude, you are missing data I think...")
+            return
+        self.model.fit(self.features, self.labels, epochs=10, batch_size=32)
+
+    def set_data(self,features,labels):
+        self.features = features
+        self.labels = labels
+    
+    def predict(self,datum):
+        return self.model.predict(datum)
+    
+    def set_model(self, model):
+        self.model = model
+    
+    def save(self):
+        timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+        # saving the model
+        model_json = self.model.to_json()
+        filename = "models/"+timestamp
+        os.makedirs(filename, exist_ok=True)
+        with open("models/"+timestamp+"/model.json", "w") as json_file:
+            json_file.write(model_json)
+        # serialize weights to HDF5
+        self.model.save_weights("models/"+timestamp+"/weights.h5")
+        print("Saved model to disk as with "+timestamp+" timestamp")
+    
+    def load(self, foldername):
+        f = open("/home/welcomebuddy/Documents/projects/morganstanley/uttt_bot/tactics/model.json")
+        model = model_from_json(f.read())
+        f.close()
+        model.load_weights("/home/welcomebuddy/Documents/projects/morganstanley/uttt_bot/tactics/weights.h5")
+        print("Model loaded from the disk")
+        self.model = model
+        print("Model set to the Neural Network")

@@ -1,7 +1,7 @@
 from tactics.helper import switch_turns, GameState
 from math import sqrt, log
 
-UCB_CONSTANT = 2
+UCB_CONSTANT = 5
 
 class Node:
     def __init__(self, parent, turn, move):
