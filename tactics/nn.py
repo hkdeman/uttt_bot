@@ -40,13 +40,15 @@ class NeuralNetwork:
               metrics=['accuracy'])
     
     def setup(self):
-        self.model.add(Dense(8,input_shape=(162,)))
+        self.model.add(Dense(128,input_shape=(162,)))
         self.model.add(Activation('relu'))
         self.model.add(Dense(256))
         self.model.add(Activation('relu'))
         self.model.add(Dense(512))
         self.model.add(Activation('relu'))
         self.model.add(Dense(256))
+        self.model.add(Activation('relu'))
+        self.model.add(Dense(128))
         self.model.add(Activation('relu'))
         self.model.add(Dense(2))
         self.model.add(Activation('softmax'))
@@ -88,6 +90,6 @@ class NeuralNetwork:
         model = model_from_json(f.read())
         f.close()
         model.load_weights("/home/welcomebuddy/Documents/projects/morganstanley/uttt_bot/tactics/weights.h5")
-        print("Model loaded from the disk")
+        # print("Model loaded from the disk")
         self.model = model
-        print("Model set to the Neural Network")
+        # print("Model set to the Neural Network")

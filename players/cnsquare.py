@@ -43,7 +43,7 @@ class CNSquare(StdOutPlayer):
                 all_moves.append((last_turn,sub_move))
         features = np.array(features)
         scores = self.nn.predict(features)
-        print(scores)
+        # print(scores)
         max_score_index = 0
         max_score = -1 # gonna lose completely
         least_o_score = -1

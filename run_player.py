@@ -2,6 +2,7 @@
 
 import sys
 from players.toeminator import Toeminator
+from players.ctoeminator import CToeminator
 from players.random import Random
 from players.nsquare import NSquare
 from players.cnsquare import CNSquare
@@ -14,8 +15,9 @@ def main():
 
 
 if __name__ == "__main__":
-    # player = Toeminator()
+    player = Toeminator()
     # player = Random()
-    player = CNSquare()
+    # player = CNSquare()
     # player = NSquare()
+    # player = CToeminator()
     main()

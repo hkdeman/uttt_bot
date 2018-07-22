@@ -1,1 +1,1 @@
-uabc -g 30 -p --log --verbose -f "python3 run_player.py"
+uabc -g 100 -p --log --verbose -f "python3 run_player.py"
