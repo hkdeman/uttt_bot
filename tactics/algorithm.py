@@ -7,7 +7,7 @@ import numpy as np
 from tactics.nn import NeuralNetwork
 
 class MCTS:
-    def __init__(self, board, last_turn,turn=Turns.X.value, timeout=1000, before=1):
+    def __init__(self, board, last_turn,turn=Turns.X.value, timeout=2000, before=1):
         self.turn = turn
         self.board = board
         self._cloned_board = None
@@ -233,7 +233,7 @@ class C2MCTS:
             if self._cloned_board.get_winner() == None:
                 self.backpropogate(GameState.DRAW, node)
             else:
-                self.backpropogate(GameState.WIN if node.get_turn()==Turns.X.value else GameState.LOSE, node)
+                self.backpropogate(GameState.LOSE if node.get_turn()==Turns.X.value else GameState.WIN, node)
     
     def backpropogate(self, game_state, node):
         index = 0 # to alternate between wins and loses
