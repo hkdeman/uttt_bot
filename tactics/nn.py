@@ -20,18 +20,14 @@ class NeuralNetwork:
 
     def csetup(self):
         self.model = Sequential()
-        self.model.add(Conv2D(128, kernel_size=(3, 3),
-                         activation='relu',
-                         input_shape=(9,9,2)))
-        self.model.add(Conv2D(128, (3,3), activation='relu'))
-        self.model.add(Conv2D(256, (2, 2), activation='relu'))
-        self.model.add(Conv2D(384, (1, 1), activation='relu'))
-        self.model.add(MaxPooling2D(pool_size=(3, 3)))
-        self.model.add(Dropout(0.2))
+        self.model.add(Conv2D(32, kernel_size=(3, 3),
+                 activation='relu',
+                 input_shape=(18,9,1)))
+        self.model.add(Conv2D(64, (3, 3), activation='relu'))
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
+        self.model.add(Dropout(0.25))
         self.model.add(Flatten())
-        self.model.add(Dense(64, activation='relu'))
-        self.model.add(Dropout(0.5))
-        self.model.add(Dense(64, activation='relu'))
+        self.model.add(Dense(128, activation='relu'))
         self.model.add(Dropout(0.5))
         self.model.add(Dense(2, activation='softmax'))
     
