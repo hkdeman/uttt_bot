@@ -7,10 +7,11 @@ import numpy as np
 from tactics.nn import NeuralNetwork
 from multiprocessing import Pool, Process, Manager
 import operator
+from threading import Thread
 
 possible_moves = []
 class MCTSRunner:
-    def __init__(self, board, last_turn, turn=Turns.X.value, timeout=10, before=1):
+    def __init__(self, board, last_turn, turn=Turns.X.value, timeout=20, before=1):
         self._cloned_board = clone(UltimateTicTacToe(board=board, last_turn=last_turn))
         self._moves = self._cloned_board.get_free_moves()
         games = []
@@ -22,19 +23,40 @@ class MCTSRunner:
                 games.append((board_list,last_turn,turn,timeout,before, move))
         self.games = games
     
+    def trun(self):
+        threads = []
+        manager = Manager()
+        return_dict = manager.dict()
+        for game in self.games:
+            t = Thread(target=self.initiate_algorithm, args=(game,return_dict))
+            threads.append(t)
+            t.start()
+        for thread in threads:
+            thread.join()
+
+        chosen_move = max(return_dict.copy(), key=operator.itemgetter(1))
+        return chosen_move
+
     def run(self):
         processes = []
         manager = Manager()
         return_dict = manager.dict()
         for game in self.games:
             p = Process(target=self.initiate_algorithm, args=(game,return_dict))
-            processes.append(p)
             p.start()
+            processes.append(p)
         for proc in processes:
             proc.join()
 
-        chosen_move = max(return_dict.copy(), key=operator.itemgetter(1))
-        return chosen_move
+        best_moves = return_dict.copy()
+        max_val = best_moves[self._moves[0]]
+        bmind = self._moves[0]
+        for key in best_moves:
+            if best_moves[key] > max_val:
+                max_val = best_moves[key]
+                bmind = key
+        
+        return bmind
 
     def initiate_algorithm(self, args, return_dict):
         mcts = clone(MPMCTS(*args))
@@ -105,12 +127,13 @@ class MPMCTS:
                     break
             node = node.add_child(next_move)
             self.play_cloned_board(move=next_move, turn=node.get_turn())
+             
         # to give more precendence to the bigger board
         # to make sure long term goals are in mind
 
         if (won and self._cloned_board.get_winner() == GameState.WIN):
             node.small_board_won()
-            next_move = node.get_move()
+            # next_move = node.get_move()
         # elif (len(self._cloned_board.get_free_moves())<3):
         #     node.set_as_desirable(-0.3)
         
@@ -118,13 +141,12 @@ class MPMCTS:
 
     def roll_out(self, node):
         # first approach, random sample to see
-        current_simulation_turn = switch_turns(node.get_turn()) 
+        current_simulation_turn = switch_turns(node.get_turn())
         while not self._cloned_board.is_game_done():
             moves = self._cloned_board.get_free_moves()
             move = choice(moves)
             self.play_cloned_board(move, current_simulation_turn)
             current_simulation_turn = switch_turns(current_simulation_turn)
-            
 
         if self._cloned_board.get_winner() == None:
             self.backpropogate(GameState.DRAW, node)
@@ -153,7 +175,7 @@ class MPMCTS:
         return sorted(nodes,key=lambda n:n.get_ucb_value())[-1]
 
     def play_cloned_board(self, move, turn):
-        self._cloned_board.move(turn,*move)
+        return self._cloned_board.move(turn,*move)
     
     def choose_best_next_move(self):
         # move = sorted(self.mct.get_root().get_children(), key=lambda n: n.get_score())[-1]
@@ -247,9 +269,9 @@ class C2MCTS:
             new_board[move[0]][move[1]] = 1
             feature = np.concatenate((old_board.flatten(),new_board.flatten()),axis=0).reshape((18,9,1))
             score = self.nn.predict(np.array([feature]))[0]
-            if score[0]>0.9:
+            if score[0]>0.5:
                 self.backpropogate(GameState.WIN, node)        
-            elif score[1]>0.9:
+            elif score[1]>0.5:
                 self.backpropogate(GameState.LOSE, node)            
             else:
                 self.backpropogate(GameState.DRAW, node)
@@ -287,7 +309,7 @@ class C2MCTS:
         return move.get_move()
 
 class MCTS:
-    def __init__(self, board, last_turn,turn=Turns.X.value, timeout=1000, before=1):
+    def __init__(self, board, last_turn,turn=Turns.X.value, timeout=200, before=1):
         self.turn = turn
         self.board = board
         self._cloned_board = None

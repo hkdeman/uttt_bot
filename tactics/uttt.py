@@ -49,7 +49,7 @@ class UltimateTicTacToe:
                 positions.append(i)
         return positions
 
-    def move(self,turn, grid, pos):
+    def move(self, turn, grid, pos):
         if self.last_turn == None:
             if self.board[grid].move(turn, pos):
                 self.last_turn = grid if not self.board[grid].is_game_done() else None                

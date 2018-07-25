@@ -3,7 +3,7 @@ import random
 from engine import MainBoardCoords, SubBoardCoords, SubBoard
 from players.stdout import StdOutPlayer
 from tactics.parser import parse
-from tactics.algorithm import MCTSRunner
+from tactics.algorithm import MCTS, MCTSRunner
 from tactics.helper import moves_mapper, reverse_moves_mapper
 
 class Toeminator(StdOutPlayer):
