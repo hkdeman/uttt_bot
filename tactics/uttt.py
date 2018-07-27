@@ -52,13 +52,13 @@ class UltimateTicTacToe:
     def move(self, turn, grid, pos):
         if self.last_turn == None:
             if self.board[grid].move(turn, pos):
-                self.last_turn = grid if not self.board[grid].is_game_done() else None                
+                self.last_turn = pos if not self.board[pos].is_game_done() else None                
                 self.previous_move = (grid,pos)
                 return True
             return False
         elif grid == self.last_turn:
             if self.board[grid].move(turn, pos):
-                self.last_turn = grid if not self.board[grid].is_game_done() else None
+                self.last_turn = pos if not self.board[pos].is_game_done() else None
                 self.previous_move = (grid,pos)
                 return True
             return False
