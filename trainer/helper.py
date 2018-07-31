@@ -3,7 +3,7 @@ import time
 
 class Turns(Enum):
     X = 1
-    O = -1
+    O = 2
     Empty = 0
 
 class GameState(Enum):

@@ -46,7 +46,7 @@ class Node:
 
     def set_as_desirable(self, value):
         if(not self._is_desirable):
-            self._wins += value*100000000
+            self._wins += value
             self._is_desirable = True
         self._visits = 1
 

@@ -14,9 +14,5 @@ class Toeminator(StdOutPlayer):
         new_board = parse(self.main_board)
         last_turn = self.main_board.sub_board_next_player_must_play
         mcts = MCTS(board=new_board,last_turn=reverse_moves_mapper[(last_turn.row,last_turn.col)] if last_turn is not None else None)
-        sub_board, pos = mcts.run()
-        # print("----------------")
-        # print(sub_board)
-        # print(pos)
-        # print("----------------")        
+        sub_board, pos = mcts.run()    
         return moves_mapper[sub_board], moves_mapper[pos]
